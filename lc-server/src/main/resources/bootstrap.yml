@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: lc-server
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        namespace: d8a26b86-13ed-4171-b923-bcda7b1c93a4
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: d8a26b86-13ed-4171-b923-bcda7b1c93a4
+        file-extension: yaml
+        shared-configs:
+          - dataId: lc-server.yaml
+            refresh: true
+server:
+  port: 8001

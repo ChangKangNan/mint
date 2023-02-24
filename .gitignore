@@ -1,0 +1,4 @@
+# Project exclude paths
+/lc-common/target/
+/lc-server/target/
+/lc-server-oss/target/
