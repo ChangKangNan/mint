@@ -3,7 +3,7 @@ package org.ckn.controller;
 
 import org.ckn.service.SysUserService;
 import org.ckn.util.ApiResult;
-import org.ckn.util.User;
+import org.ckn.util.UserVo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -30,19 +30,13 @@ public class SysUserController {
     }
 
     @RequestMapping("/user/{username}")
-    public ApiResult<User> selectUser(@PathVariable("username") String username) {
+    public ApiResult<UserVo> selectUser(@PathVariable("username") String username) {
         return ApiResult.success(userService.selectUser(username));
     }
 
     @PostMapping("/user")
-    public ApiResult<User> register(@RequestBody User user) {
+    public ApiResult<UserVo> register(@RequestBody UserVo user) {
         return ApiResult.success(userService.save(user));
     }
-
-    @GetMapping("/user/login")
-    public ApiResult<Boolean> login(String userName,String password) {
-        return ApiResult.success(userService.login(userName,password));
-    }
-
 }
 

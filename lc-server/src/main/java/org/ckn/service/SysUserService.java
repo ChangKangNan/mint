@@ -1,9 +1,8 @@
 package org.ckn.service;
 
-import org.ckn.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.ckn.util.User;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.ckn.entity.SysUser;
+import org.ckn.util.UserVo;
 
 import java.util.List;
 
@@ -25,17 +24,16 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 获取用户权限列表
-     * @param userId 用户ID
      * @return
      */
-    User selectUser(String username);
+    UserVo selectUser(String username);
 
     /**
      * 注册
      * @param user
      * @return
      */
-    User save(User user);
+    UserVo save(UserVo user);
 
     /**
      * 注册

@@ -20,8 +20,10 @@
 
     <modules>
         <module>lc-server</module>
-        <module>lc-server-oss</module>
+        <module>lc-server-gateway</module>
         <module>lc-common</module>
+        <module>lc-server-gateway</module>
+        <module>lc-server-oauth</module>
     </modules>
 
     <!--不添加依赖，让子pom继承使用-->

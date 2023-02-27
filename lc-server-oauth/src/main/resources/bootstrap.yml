@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: lc-server-oauth
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        namespace: d8a26b86-13ed-4171-b923-bcda7b1c93a4
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: 127.0.0.1
+    port: 6379
+server:
+  port: 8002

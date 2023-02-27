@@ -4,14 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.cli.Digest;
 import org.ckn.entity.*;
 import org.ckn.mapper.SysUserMapper;
 import org.ckn.service.*;
-import org.ckn.util.User;
+import org.ckn.util.UserVo;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +35,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Resource
     SysRoleService sysRoleService;
     @Resource
-    SysRolePermissionService sysRolePermissionService;
+    SysRoleMenuService sysRoleMenuService;
     @Resource
-    SysPermissionService permissionService;
+    SysMenuService sysMenuService;
 
     @Override
     public List<String> selectUserPermissions(Long userId) {
@@ -47,14 +45,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (ObjectUtil.isNull(sysUser)) {
             return new ArrayList<>();
         }
-        if(CollUtil.isEmpty(sysRoleService.lambdaQuery().list())){
+        if (CollUtil.isEmpty(sysRoleService.lambdaQuery().list())) {
             return new ArrayList<>();
         }
         Set<Long> roleIds = sysRoleService.lambdaQuery().list()
                 .stream().map(SysRole::getId).collect(Collectors.toSet());
         List<SysUserRole> userRoles = userRoleService.lambdaQuery()
                 .eq(SysUserRole::getUserId, userId)
-                .notIn(SysUserRole::getRoleId, roleIds)
+                .in(SysUserRole::getRoleId, roleIds)
                 .list();
         if (CollUtil.isEmpty(userRoles)) {
             return new ArrayList<>();
@@ -63,43 +61,48 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .map(SysUserRole::getRoleId)
                 .distinct()
                 .collect(Collectors.toList());
-        List<Long> permissions = permissionService.lambdaQuery().list().stream().map(SysPermission::getId).collect(Collectors.toList());
-        List<SysRolePermission> rolePermissions = sysRolePermissionService.lambdaQuery()
-                .in(SysRolePermission::getPermissionId, permissions)
-                .in(SysRolePermission::getRoleId, uRoles)
-                .list();
-        if (CollUtil.isEmpty(rolePermissions)) {
-            return new ArrayList<>();
+        List<String> auth = new ArrayList<>();
+        for (Long uRole : uRoles) {
+            SysRole userRole = sysRoleService.lambdaQuery().eq(SysRole::getId, uRole).one();
+            List<SysRoleMenu> rolePermissions = sysRoleMenuService.lambdaQuery()
+                    .eq(SysRoleMenu::getRoleId, uRole)
+                    .list();
+            if (CollUtil.isNotEmpty(rolePermissions) && userRole != null) {
+                auth.add("ROLE_" + userRole.getRoleName());
+                for (SysRoleMenu permission : rolePermissions) {
+                    Long permissionId = permission.getMenuId();
+                    SysMenu sysPermission = sysMenuService.lambdaQuery().eq(SysMenu::getId, permissionId).one();
+                    if (sysPermission != null && StrUtil.isNotBlank(sysPermission.getMenuUrl())) {
+                        auth.add(sysPermission.getMenuUrl());
+                    }
+                }
+            }
         }
-        List<Long> permissionIds = rolePermissions.stream().map(SysRolePermission::getPermissionId).distinct().collect(Collectors.toList());
-        return permissionService.lambdaQuery()
-                .in(SysPermission::getId, permissionIds)
-                .list()
-                .stream()
-                .map(SysPermission::getPermission)
-                .distinct()
-                .collect(Collectors.toList());
+        return auth;
     }
 
     @Override
-    public User selectUser(String username) {
+    public UserVo selectUser(String username) {
         SysUser sysUser = this.lambdaQuery().eq(SysUser::getUsername, username).one();
-        User user = new User();
-        BeanUtil.copyProperties(sysUser,user);
+        if(sysUser ==null){
+            return null;
+        }
+        UserVo user = new UserVo();
+        BeanUtil.copyProperties(sysUser, user);
         return user;
     }
 
     @Override
-    public User save(User user) {
+    public UserVo save(UserVo user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
             throw new RuntimeException("用户信息不全!");
         }
         Integer count = this.lambdaQuery().eq(SysUser::getUsername, user.getUsername()).count();
-        if(count>0){
+        if (count > 0) {
             throw new RuntimeException("当前用户名已被注册!");
         }
-        SysUser sysUser=new SysUser();
-        BeanUtil.copyProperties(user,sysUser);
+        SysUser sysUser = new SysUser();
+        BeanUtil.copyProperties(user, sysUser);
         String password = sysUser.getPassword();
         //加密
         sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
@@ -109,8 +112,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public Boolean login(String userName, String password) {
-        log.info("userName:"+userName);
-        log.info("password:"+password);
+        log.info("userName:" + userName);
+        log.info("password:" + password);
         if (StrUtil.isBlank(userName) || StrUtil.isBlank(password)) {
             throw new RuntimeException("输入信息不规范!");
         }
@@ -122,7 +125,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new RuntimeException("用户名或密码错误!");
         }
         //登录成功
-
         return true;
     }
 }

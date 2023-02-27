@@ -104,6 +104,19 @@ public class ApiResult<T> implements Serializable {
         return result;
     }
 
+
+    /**
+     * 自定义返回体
+     * @param code 响应状态码
+     * @param msg 响应消息内容
+     * @return ApiResult对象
+     */
+    public static  ApiResult customize(int code, String msg) {
+        ApiResult result = new ApiResult();
+        result.setCode(code);
+        result.setMsg(msg);
+        return result;
+    }
     public void setMsg(String msg) {
         this.msg = msg;
     }
