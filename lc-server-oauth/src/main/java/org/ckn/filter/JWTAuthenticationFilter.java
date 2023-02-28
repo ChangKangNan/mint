@@ -19,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -27,8 +28,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -58,7 +62,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         AuthUser user = (AuthUser) authResult.getPrincipal();
-        /**
+        log.info("user-getPrincipal:{}", JSONUtil.toJsonStr(user));
+        Collection<? extends GrantedAuthority> grantedAuthorities = user.getAuthorities();
+        /**user
          * 1、创建密钥
          */
         MACSigner macSigner = new MACSigner(JWTConstants.SECRET);
@@ -92,9 +98,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String authKey = key + ":Authorities";
 
         redisTemplate.opsForValue().set(key, jwtToken, EXPIRE_TIME, TimeUnit.MILLISECONDS);
-
-        redisTemplate.opsForValue().set(authKey, JSONUtil.toJsonStr(user.getAuthorities()), EXPIRE_TIME, TimeUnit.SECONDS);
-
+        List<String> authList = grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        redisTemplate.opsForValue().set(authKey, JSONUtil.toJsonStr(authList), EXPIRE_TIME, TimeUnit.SECONDS);
         response.getWriter().write(JSONUtil.toJsonStr(result));
     }
 

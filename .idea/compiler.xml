@@ -11,10 +11,12 @@
         <module name="lc-server" />
         <module name="lc-server-oauth" />
         <module name="lc-server-gateway" />
+        <module name="lc-gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="gateway" target="1.8" />
+      <module name="lc-gateway" target="1.8" />
       <module name="lc-server-oss" target="1.8" />
       <module name="splc-server" target="1.8" />
     </bytecodeTargetLevel>

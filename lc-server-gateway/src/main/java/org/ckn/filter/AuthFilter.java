@@ -1,5 +1,7 @@
 package org.ckn.filter;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
@@ -24,6 +26,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -50,16 +53,23 @@ public class AuthFilter implements GlobalFilter , Ordered {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         String headerToken = request.getHeaders().getFirst(JWTConstants.TOKEN_HEADER);
+        String requestURI = request.getURI().getPath();
         log.info("headerToken:{}", headerToken);
         //1、只要带上了token， 就需要判断Token是否有效
-        if ( !StringUtils.isEmpty(headerToken) && !verifierToken(headerToken)){
-            return getVoidMono(response, 401, "token无效");
+        if(StrUtil.startWith(requestURI,"/user/login")){
+           return chain.filter(exchange);
         }
         String path = request.getURI().getPath();
         log.info("request path:{}", path);
         //2、判断是否是过滤的路径， 是的话就放行
-        if ( isExclusionUrl(path) ){
+        if (isExclusionUrl(path) ){
             return chain.filter(exchange);
+        }
+        if (StringUtils.isEmpty(headerToken)){
+            return getVoidMono(response, 401, "未携带token");
+        }
+        if ( !StringUtils.isEmpty(headerToken) && !verifierToken(headerToken)){
+            return getVoidMono(response, 401, "token无效");
         }
         //3、判断请求的URL是否有权限
         boolean permission = hasPermission(headerToken , path);
@@ -87,12 +97,12 @@ public class AuthFilter implements GlobalFilter , Ordered {
     private boolean isExclusionUrl(String path){
         List<String> exclusions = exclusionUrl.getUrl();
         if(exclusions !=null){
-            if ( exclusions.size() == 0){
+            if (exclusions.size() == 0){
                 return false;
             }
             return exclusions.stream().anyMatch( action -> antPathMatcher.match(action , path));
         }
-        return true;
+        return false;
     }
 
     private boolean verifierToken(String headerToken){
@@ -125,7 +135,6 @@ public class AuthFilter implements GlobalFilter , Ordered {
             SignedJWT jwt = getSignedJWT(headerToken);
             Object payload = jwt.getJWTClaimsSet().getClaim("payload");
             UserVo user = JSONUtil.toBean(payload.toString(), UserVo.class);
-            //生成Key， 把权限放入到redis中
             String keyPrefix = "JWT" + user.getId() + ":";
             String token = headerToken.replace(JWTConstants.TOKEN_PREFIX, "");
             String keySuffix = Md5Utils.getMD5(token.getBytes());
@@ -136,8 +145,9 @@ public class AuthFilter implements GlobalFilter , Ordered {
             if (StringUtils.isEmpty(authStr)){
                 return false;
             }
-            List<Authority> authorities = JSONUtil.toList(authStr , Authority.class);
-            return authorities.stream().anyMatch(authority -> antPathMatcher.match(authority.getAuthority(), path));
+            List<String> authorities = JSONUtil.toList(authStr , String.class);
+            return authorities.stream().anyMatch(authority -> antPathMatcher.match(authority, path));
+
         } catch (ParseException e) {
             e.printStackTrace();
         }

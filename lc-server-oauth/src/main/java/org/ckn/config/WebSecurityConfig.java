@@ -43,22 +43,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(new MobileAuthenticationProvider());
         UsernameAuthenticationProvider usernameAuthenticationProvider = new UsernameAuthenticationProvider();
+        //加载用户加密方式
         usernameAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        //加载用户信息类
         usernameAuthenticationProvider.setUserDetailsService(userDetailsService);
         auth.authenticationProvider(usernameAuthenticationProvider);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf().disable()//csrf禁用使其支持POST请求
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers(HttpMethod.POST, "/login").permitAll()//login请求获取token放行
+                .anyRequest().authenticated()//其余请求全部校验权限
                 .and()
+                //增加过滤链
                 .addFilterBefore(new JWTAuthenticationFilter(authenticationManager(), redisTemplate), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTAuthorizationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//禁用session
                 .and()
-                .exceptionHandling().authenticationEntryPoint(new JWTAuthenticationEntryPoint());
+                .exceptionHandling().authenticationEntryPoint(new JWTAuthenticationEntryPoint());//匿名用户访问无权限资源时的异常处理
     }
 }

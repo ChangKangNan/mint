@@ -6,11 +6,6 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 
 import java.util.Collection;
 
-/**
- * @author Mr.Yangxiufeng
- * @date 2021-05-19
- * @time 15:48
- */
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 

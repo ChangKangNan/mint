@@ -1,4 +1,4 @@
-create table mint.sys_menu
+create table sys_menu
 (
     id          bigint auto_increment comment '菜单Id'
         primary key,
@@ -12,7 +12,7 @@ create table mint.sys_menu
 )
     comment '菜单表' charset = utf8;
 
-create table mint.sys_role
+create table sys_role
 (
     id          bigint auto_increment
         primary key,
@@ -23,7 +23,7 @@ create table mint.sys_role
 )
     comment '角色表' charset = utf8;
 
-create table mint.sys_role_menu
+create table sys_role_menu
 (
     id          bigint auto_increment
         primary key,
@@ -35,7 +35,7 @@ create table mint.sys_role_menu
 )
     comment '角色-权限表' charset = utf8;
 
-create table mint.sys_user
+create table sys_user
 (
     id          bigint auto_increment
         primary key,
@@ -47,7 +47,7 @@ create table mint.sys_user
 )
     comment '用户表' charset = utf8;
 
-create table mint.sys_user_role
+create table sys_user_role
 (
     id          bigint auto_increment
         primary key,

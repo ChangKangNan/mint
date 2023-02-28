@@ -4,7 +4,6 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-    password: 123456
   cloud:
     nacos:
       username: nacos
@@ -12,6 +11,13 @@ spring:
       discovery:
         namespace: d8a26b86-13ed-4171-b923-bcda7b1c93a4
         server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: d8a26b86-13ed-4171-b923-bcda7b1c93a4
+        file-extension: yaml
+        shared-configs:
+          - dataId: lc-server-gateway.yaml
+            refresh: true
     gateway:
       # 路由规则
       routes:
@@ -23,11 +29,11 @@ spring:
         # 过滤器
           filters:
             - StripPrefix=1 #转发之前去掉第一层路由
-        - id: route-user # 路由的唯一标识，路由到order
-          uri: lb://lc-server # 需要转发的地址  lb：使用nacos本地的负载均衡策略
+        - id: route # 路由的唯一标识，路由到route
+          uri: lb://lc-server-gateway # 需要转发的地址  lb：使用nacos本地的负载均衡策略
           # 断言规则 用于路由规则的匹配
           predicates:
-            - Path=/server/**
+            - Path=/route/**
           # 过滤器
           filters:
             - StripPrefix=1 #转发之前去掉第一层路由
