@@ -53,6 +53,7 @@ public class AuthFilter implements GlobalFilter , Ordered {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         String headerToken = request.getHeaders().getFirst(JWTConstants.TOKEN_HEADER);
+//        String org = request.getHeaders().getFirst(JWTConstants.TOKEN_ORG);
         String requestURI = request.getURI().getPath();
         log.info("headerToken:{}", headerToken);
         //1、只要带上了token， 就需要判断Token是否有效

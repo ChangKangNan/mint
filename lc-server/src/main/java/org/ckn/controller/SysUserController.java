@@ -3,6 +3,7 @@ package org.ckn.controller;
 
 import org.ckn.service.SysUserService;
 import org.ckn.util.ApiResult;
+import org.ckn.util.SecurityUtils;
 import org.ckn.util.UserVo;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,11 @@ public class SysUserController {
     @PostMapping("/user")
     public ApiResult<UserVo> register(@RequestBody UserVo user) {
         return ApiResult.success(userService.save(user));
+    }
+
+    @RequestMapping("/name")
+    public ApiResult<String> register() {
+        return ApiResult.success(SecurityUtils.getInstance().getUsername());
     }
 }
 
