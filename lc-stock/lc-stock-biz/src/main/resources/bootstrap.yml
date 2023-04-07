@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: lc-stock-biz
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        namespace: d8a26b86-13ed-4171-b923-bcda7b1c93a4
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: d8a26b86-13ed-4171-b923-bcda7b1c93a4
+        file-extension: yaml
+        shared-configs:
+          - dataId: lc-stock.yaml
+            refresh: true
+server:
+  port: 8501
+#mybatis-plus配置控制台打印完整带参数SQL语句
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

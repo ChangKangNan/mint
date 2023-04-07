@@ -1,0 +1,13 @@
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\util\RouteConvert.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\entity\RouteDeleteParam.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\mapper\GatewayRouteMapper.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\config\MyMetaObjectHandler.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\entity\ResponseCodeConstants.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\service\impl\GatewayRouteServiceImpl.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\config\ExclusionUrl.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\filter\AuthFilter.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\GatewayApplication.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\controller\GatewayRouteController.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\entity\GatewayRoute.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\repository\DbRouteRepository.java
+D:\springcloud\mint\lc-server-gateway\src\main\java\org\ckn\service\GatewayRouteService.java

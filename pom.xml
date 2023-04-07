@@ -22,9 +22,10 @@
         <module>lc-server</module>
         <module>lc-server-gateway</module>
         <module>lc-common</module>
-        <module>lc-server-gateway</module>
         <module>lc-server-oauth</module>
         <module>lc-xxl-job-admin</module>
+        <module>lc-stock</module>
+        <module>lc-order</module>
     </modules>
 
     <!--不添加依赖，让子pom继承使用-->

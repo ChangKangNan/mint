@@ -1,0 +1,13 @@
+org\ckn\config\ExclusionUrl.class
+org\ckn\service\GatewayRouteService.class
+org\ckn\config\MyMetaObjectHandler.class
+org\ckn\entity\GatewayRoute.class
+org\ckn\mapper\GatewayRouteMapper.class
+org\ckn\repository\DbRouteRepository.class
+org\ckn\GatewayApplication.class
+org\ckn\service\impl\GatewayRouteServiceImpl.class
+org\ckn\controller\GatewayRouteController.class
+org\ckn\filter\AuthFilter.class
+org\ckn\entity\ResponseCodeConstants.class
+org\ckn\entity\RouteDeleteParam.class
+org\ckn\util\RouteConvert.class

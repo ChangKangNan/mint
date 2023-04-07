@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <option name="BUILD_PROCESS_ADDITIONAL_VM_OPTIONS" value="-Djps.track.ap.dependencies=false" />
+    <option name="USE_RELEASE_OPTION" value="false" />
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="lc-xxl-job-admin" />
-        <module name="lc-common" />
+        <module name="lc-stock-api" />
         <module name="lc-server" />
         <module name="lc-server-oauth" />
+        <module name="lc-order-api" />
+        <module name="lc-xxl-job-admin" />
+        <module name="lc-stock-biz" />
+        <module name="lc-common" />
+        <module name="lc-order-biz" />
         <module name="lc-server-gateway" />
         <module name="lc-gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="gateway" target="1.8" />
-      <module name="lc-gateway" target="1.8" />
-      <module name="lc-server-oss" target="1.8" />
-      <module name="splc-server" target="1.8" />
+      <module name="lc-bussiness" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="lc-stock" options="" />
+    </option>
   </component>
 </project>

@@ -53,7 +53,6 @@ public class AuthFilter implements GlobalFilter , Ordered {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         String headerToken = request.getHeaders().getFirst(JWTConstants.TOKEN_HEADER);
-//        String org = request.getHeaders().getFirst(JWTConstants.TOKEN_ORG);
         String requestURI = request.getURI().getPath();
         log.info("headerToken:{}", headerToken);
         //1、只要带上了token， 就需要判断Token是否有效
@@ -77,6 +76,12 @@ public class AuthFilter implements GlobalFilter , Ordered {
         if (!permission){
             return getVoidMono(response, 403, "无访问权限");
         }
+        //放置头部信息
+        // ServerHttpRequest tokenRequest = request.mutate()
+        ////将灰度标记传递过去  param: version  value: 2.0
+        // .header("version","2.0")
+        // .build();
+        // ServerWebExchange build = exchange.mutate().request(tokenRequest).build();
         return chain.filter(exchange);
     }
 
